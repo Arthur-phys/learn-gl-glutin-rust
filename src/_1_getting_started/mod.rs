@@ -16,3 +16,5 @@ mod _8_shader_uniforms;
 pub use self::_8_shader_uniforms::*;
 mod _9_fragment_interpolation_vertex;
 pub use self::_9_fragment_interpolation_vertex::*;
+mod _10_upside_down_triangle;
+pub use self::_10_upside_down_triangle::*;

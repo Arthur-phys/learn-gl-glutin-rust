@@ -2,6 +2,7 @@
 mod _1_getting_started;
 #[cfg(feature = "chapter-1")]
 use _1_getting_started::*;
+mod shader;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -21,6 +22,7 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1_7" => chaining_variables_in_shaders(),
         #[cfg(feature = "chapter-1")] "1_8" => uniforms_in_shaders(),
         #[cfg(feature = "chapter-1")] "1_9" => fragment_shader_interpolation(),
+        #[cfg(feature = "chapter-1")] "1_10" => upside_down(),
         _     => println!("Unknown tutorial id")
     }
 }
