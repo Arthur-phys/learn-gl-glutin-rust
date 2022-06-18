@@ -23,6 +23,9 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1_8" => uniforms_in_shaders(),
         #[cfg(feature = "chapter-1")] "1_9" => fragment_shader_interpolation(),
         #[cfg(feature = "chapter-1")] "1_10" => upside_down(),
+        #[cfg(feature = "chapter-1")] "1_11" => offset_triangle(),
+        #[cfg(feature = "chapter-1")] "1_12" => position_interpolation(),
+        #[cfg(feature = "chapter-1")] "1_13" => load_texture(),
         _     => println!("Unknown tutorial id")
     }
 }
