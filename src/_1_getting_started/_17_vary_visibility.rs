@@ -24,7 +24,7 @@ const indices: [u32;6] = [
     3, 2, 1
 ];
 
-pub fn load_texture() {
+pub fn vary_visibility() {
     // #################
     // Image obtaining #
     // #################
@@ -33,6 +33,11 @@ pub fn load_texture() {
     let height = img.height();
     let width = img.width();
     let img_vec: Vec<u8> = img.into_bytes();
+
+    let img_2 = image::open("/home/Arthur/Tesis/learn-opengl-glutin-gl-rust/src/_1_getting_started/images/awesomeface.png").unwrap().flipv();
+    let height_2 = img_2.height();
+    let width_2 = img_2.width();
+    let img_vec_2: Vec<u8> = img_2.into_bytes();
 
     // #################
     // Image obtaining #
@@ -68,8 +73,8 @@ pub fn load_texture() {
     });
 
     // creation of shader_program
-    let vertex_path = "/home/Arthur/Tesis/learn-opengl-glutin-gl-rust/src/_1_getting_started/shaders/vertex_shader_13.vs";
-    let fragment_path = "/home/Arthur/Tesis/learn-opengl-glutin-gl-rust/src/_1_getting_started/shaders/fragment_shader_13.fs";
+    let vertex_path = "/home/Arthur/Tesis/learn-opengl-glutin-gl-rust/src/_1_getting_started/shaders/vertex_shader_17.vs";
+    let fragment_path = "/home/Arthur/Tesis/learn-opengl-glutin-gl-rust/src/_1_getting_started/shaders/fragment_shader_17.fs";
     let shader_program = Shader::new(vertex_path, fragment_path);
 
     // ################
@@ -87,12 +92,14 @@ pub fn load_texture() {
     // substitutes using all the calls to VBO
     let mut ebo: u32 = 0;
     let mut texture: u32 = 0; // texture variable to bind to.
+    let mut texture_2: u32 = 0; // awesomeface texture
 
     unsafe {
         gl::GenVertexArrays(1,&mut vao); // Generate a VAO to link to buffers
         gl::GenBuffers(1, &mut vbo); // generates a buffer in GPU.
         gl::GenBuffers(1,&mut ebo);
         
+        // binding of vao. Since it's only one, it can be done once here.
         gl::BindVertexArray(vao); // vertex array binding
         
         gl::BindBuffer(gl::ARRAY_BUFFER,vbo); // binding buffer to specific type ARRAY_BUFFER
@@ -116,14 +123,10 @@ pub fn load_texture() {
         gl::VertexAttribPointer(2,2,gl::FLOAT,gl::FALSE,8*mem::size_of::<GLfloat>() as GLsizei, (6 * mem::size_of::<GLfloat>()) as *const c_void);
         gl::EnableVertexAttribArray(2); // Enabling vertex atributes giving vertex location (setup in vertex shader).
         
-        gl::GenTextures(1, &mut texture); // generate texture
+        // generate texture
+        gl::GenTextures(1, &mut texture);
+        gl::ActiveTexture(gl::TEXTURE0); // activate texture zero (one out of 16)
         gl::BindTexture(gl::TEXTURE_2D,texture); // binding to texture 2d
-        // texture wrapping parameters
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32); //how to wrap in s coordinate
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32); // how to wrap in t coordinate
-        // texture filtering
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32); // when texture is small, scall using linear
-        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32); // when texture is big, scall using linear
         // create texture and generate mipmaps
         gl::TexImage2D(gl::TEXTURE_2D, // Texture target is 2D since we created a texture for that
             0, // Mipmap level 0 which is default. Otherwise wue could specify levels and change it
@@ -135,6 +138,38 @@ pub fn load_texture() {
             gl::UNSIGNED_BYTE, // RGB values are given as chars
             &img_vec[0] as *const u8 as *const c_void); // Pointer to first element of vector
         gl::GenerateMipmap(gl::TEXTURE_2D); // generate mipmap for texture 2d (when object is far or close)
+        
+        // generate second texture
+        gl::GenTextures(1, &mut texture_2);
+        gl::ActiveTexture(gl::TEXTURE1); // activate texture one (one out of 16)
+        gl::BindTexture(gl::TEXTURE_2D,texture_2);
+        // create texture and generate mipmaps
+        gl::TexImage2D(
+            gl::TEXTURE_2D, // Texture target is 2D since we created a texture for that
+            0, // Mipmap level 0 which is default. Otherwise wue could specify levels and change it
+            gl::RGB as i32, // Image is given as values of RGB
+            width_2 as i32,
+            height_2 as i32,
+            0, // Legacy sutff not explained
+            gl::RGBA, // Format of the image (this is the actual format)
+            gl::UNSIGNED_BYTE, // RGB values are given as chars
+            &img_vec_2[0] as *const u8 as *const c_void); // Pointer to first element of vector
+        gl::GenerateMipmap(gl::TEXTURE_2D); // generate mipmap for texture 2d (when object is far or close)
+
+        // texture wrapping parameters
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32); //how to wrap in s coordinate
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_T, gl::REPEAT as i32); // how to wrap in t coordinate
+        // texture filtering
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::NEAREST as i32); // when texture is small, scall using linear
+        gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::NEAREST as i32); // when texture is big, scall using linear
+        
+
+        // Use shader
+        shader_program.use_shader();
+        // we need to tell the shader which variables are associated with which textures
+        shader_program.set_int("ourTexture",0); // use TEXTURE0
+        shader_program.set_int("secondTexture",1); // use TEXTURE1
+        // if we invert them, the shader fragment will also invert the percentage of each one present in the final pixels
     }
 
     // #####################
@@ -180,13 +215,8 @@ pub fn load_texture() {
         unsafe {
             gl::ClearColor(0.2, 0.3, 0.3, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
-
-            // bind texture
-            gl::BindTexture(gl::TEXTURE_2D,texture);
             
             // render
-            shader_program.use_shader();
-            gl::BindVertexArray(vao);
             gl::DrawElements(gl::TRIANGLES, 6, gl::UNSIGNED_INT, ptr::null());
         }
         new_context.swap_buffers().unwrap(); //needed to cahnge old and new buffer and redraw

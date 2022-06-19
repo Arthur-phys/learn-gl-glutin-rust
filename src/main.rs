@@ -26,6 +26,11 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1_11" => offset_triangle(),
         #[cfg(feature = "chapter-1")] "1_12" => position_interpolation(),
         #[cfg(feature = "chapter-1")] "1_13" => load_texture(),
+        #[cfg(feature = "chapter-1")] "1_14" => double_texture(),
+        #[cfg(feature = "chapter-1")] "1_15" => flip_horizontally_fragment_shader(),
+        #[cfg(feature = "chapter-1")] "1_16" => different_wrappers_for_diff_textures(),
+        #[cfg(feature = "chapter-1")] "1_17" => vary_visibility(),
+        #[cfg(feature = "chapter-1")] "1_18" => vary_visibility_uniform(),
         _     => println!("Unknown tutorial id")
     }
 }
