@@ -1,4 +1,5 @@
 use std::{ffi::CString,ptr,fs::File};
+use cgmath::{Matrix4,Matrix};
 use gl::types::{GLint};
 use std::io::Read;
 use gl;
@@ -89,6 +90,13 @@ impl Shader {
         let c_str_name = CString::new(opengl_variable_name.as_bytes()).unwrap();
         unsafe {
            gl::Uniform1f(gl::GetUniformLocation(self.id, c_str_name.as_ptr()),float_value);
+        }
+    }
+
+    pub fn set_mat4(&self, opengl_variable_name: &str, mat4_value: &Matrix4<f32>) {
+        let c_str_name = CString::new(opengl_variable_name.as_bytes()).unwrap();
+        unsafe {
+            gl::UniformMatrix4fv(gl::GetUniformLocation(self.id, c_str_name.as_ptr()),1,gl::FALSE,mat4_value.as_ptr());
         }
     }
 }

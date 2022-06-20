@@ -31,6 +31,10 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1_16" => different_wrappers_for_diff_textures(),
         #[cfg(feature = "chapter-1")] "1_17" => vary_visibility(),
         #[cfg(feature = "chapter-1")] "1_18" => vary_visibility_uniform(),
+        #[cfg(feature = "chapter-1")] "1_19" => transform_function(),
+        #[cfg(feature = "chapter-1")] "1_20" => transform_over_time(),
+        #[cfg(feature = "chapter-1")] "1_21" => inverse_transform(),
+        #[cfg(feature = "chapter-1")] "1_22" => double_rotating_containers(),
         _     => println!("Unknown tutorial id")
     }
 }
