@@ -35,6 +35,12 @@ fn main() {
         #[cfg(feature = "chapter-1")] "1_20" => transform_over_time(),
         #[cfg(feature = "chapter-1")] "1_21" => inverse_transform(),
         #[cfg(feature = "chapter-1")] "1_22" => double_rotating_containers(),
+        #[cfg(feature = "chapter-1")] "1_23" => plane_on_x_axis(),
+        #[cfg(feature = "chapter-1")] "1_24" => d3_box(),
+        #[cfg(feature = "chapter-1")] "1_25" => ten_boxes(),
+        #[cfg(feature = "chapter-1")] "1_26" => camera_roam_box(),
+        #[cfg(feature = "chapter-1")] "1_27" => free_roam_camera(),
+        #[cfg(feature = "chapter-1")] "1_28" => rotating_camera(),
         _     => println!("Unknown tutorial id")
     }
 }
